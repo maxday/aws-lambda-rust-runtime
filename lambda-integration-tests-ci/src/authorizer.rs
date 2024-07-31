@@ -1,7 +1,9 @@
 use std::env;
 
-use aws_lambda_events::apigw::{ApiGatewayCustomAuthorizerPolicy, ApiGatewayCustomAuthorizerResponse};
-use aws_lambda_events::event::iam::IamPolicyStatement;
+use aws_lambda_events::{
+    apigw::{ApiGatewayCustomAuthorizerPolicy, ApiGatewayCustomAuthorizerResponse},
+    event::iam::IamPolicyStatement,
+};
 use lambda_runtime::{service_fn, Error, LambdaEvent};
 use serde::Deserialize;
 use serde_json::json;
