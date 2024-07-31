@@ -23,7 +23,7 @@ jobs:
             role-session-name: ${{ secrets.ROLE_SESSION_NAME }}
             aws-region: ${{ secrets.AWS_REGION }}
         - name: build  stack
-          run: sam build --beta-features
+          run: cd lambda-integration-tests-ci && sam build --beta-features
         - name: validate stack
           run: sam validate
         - name: deploy stack
