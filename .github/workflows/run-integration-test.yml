@@ -36,21 +36,16 @@ jobs:
         - name: build  stack
           run: cd lambda-integration-tests-ci && sam build --beta-features
         - name: validate stack
-          run: cd lambda-integration-tests-ci && sam validate
+          run: cd lambda-integration-tests-ci && sam validate --lint
         - name: deploy stack
           id: deploy_stack
           env:
             AWS_REGION: ${{ secrets.AWS_REGION }}
           run: |
             cd lambda-integration-tests-ci
-            randomId=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1)
-            stackName="aws-lambda-rust-integ-test-$randomId"
+            stackName="aws-lambda-rust-integ-test-$GITHUB_RUN_ID"
             echo "STACK_NAME=$stackName" >> "$GITHUB_OUTPUT"
             echo "Stack name = $stackName"
-            sam deploy --stack-name "${stackName}" --parameter-overrides "ParameterKey=SecretToken,ParameterValue=${{ secrets.SECRET_TOKEN }}" --no-confirm-changeset
-
-            TEST_ENDPOINT=$(sam list stack-outputs --stack-name "${stackName}" --output json | jq -r '.[] | .OutputValue')
-            echo "TEST_ENDPOINT=$TEST_ENDPOINT" >> "$GITHUB_OUTPUT"
         - name: run test
           env:
             SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
