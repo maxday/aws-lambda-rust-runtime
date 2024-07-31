@@ -36,12 +36,13 @@ jobs:
         - name: build  stack
           run: cd lambda-integration-tests-ci && sam build --beta-features
         - name: validate stack
-          run: sam validate
+          run: cd lambda-integration-tests-ci && sam validate
         - name: deploy stack
           id: deploy_stack
           env:
             AWS_REGION: ${{ secrets.AWS_REGION }}
           run: |
+            cd lambda-integration-tests-ci
             randomId=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1)
             stackName="aws-lambda-rust-integ-test-$randomId"
             echo "STACK_NAME=$stackName" >> "$GITHUB_OUTPUT"
