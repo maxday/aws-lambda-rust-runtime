@@ -12,10 +12,17 @@ jobs:
   run-integration-tests:
     runs-on: ubuntu-latest
     steps:
-        - uses: actions/checkout@v3
-        - uses: aws-actions/setup-sam@v2
+        - name: install Cargo Lambda
+          uses: jaxxstorm/action-install-gh-release@v1.9.0
+          with:
+            repo: cargo-lambda/cargo-lambda
+            platform: linux
+            arch: x86_64
+        - name: install SAM
+          uses: aws-actions/setup-sam@v2
           with:
             use-installer: true
+        - uses: actions/checkout@v3
         - name: configure aws credentials
           uses: aws-actions/configure-aws-credentials@v4.0.2
           with:
