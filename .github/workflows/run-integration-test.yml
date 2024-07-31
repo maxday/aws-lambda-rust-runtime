@@ -53,7 +53,7 @@ jobs:
           env:
             SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
             TEST_ENDPOINT: ${{ steps.deploy_stack.outputs.TEST_ENDPOINT }}
-          run: cargo test
+          run: cd lambda-integration-tests-ci && cargo test
         - name: cleanup
           if: always()
           env:
