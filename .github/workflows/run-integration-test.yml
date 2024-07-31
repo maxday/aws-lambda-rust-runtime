@@ -22,6 +22,10 @@ jobs:
             role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
             role-session-name: ${{ secrets.ROLE_SESSION_NAME }}
             aws-region: ${{ secrets.AWS_REGION }}
+        - name: build  stack
+          run: sam build --beta-features
+        - name: validate stack
+          run: sam validate
         - name: deploy stack
           id: deploy_stack
           env:
@@ -31,9 +35,6 @@ jobs:
             stackName="aws-lambda-rust-integ-test-$randomId"
             echo "STACK_NAME=$stackName" >> "$GITHUB_OUTPUT"
             echo "Stack name = $stackName"
-
-            sam build --beta-features
-            sam validate
             sam deploy --stack-name "${stackName}" --parameter-overrides "ParameterKey=SecretToken,ParameterValue=${{ secrets.SECRET_TOKEN }}" --no-confirm-changeset
 
             TEST_ENDPOINT=$(sam list stack-outputs --stack-name "${stackName}" --output json | jq -r '.[] | .OutputValue')
@@ -43,7 +44,6 @@ jobs:
             SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
             TEST_ENDPOINT: ${{ steps.deploy_stack.outputs.TEST_ENDPOINT }}
           run: cargo test
-
         - name: cleanup
           if: always()
           env:
